@@ -1,1 +1,1 @@
-# HR Plan
+# Odoo HR Plan Docker Image
