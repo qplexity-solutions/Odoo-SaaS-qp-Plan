@@ -1,0 +1,15 @@
+<!-- data/attendance_request_data.xml -->
+<odoo>
+    <record id="seq_attendance_request" model="ir.sequence">
+        <field name="name">Attendance Request</field>
+        <field name="code">attendance.request</field>
+        <field name="prefix">REQ/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="mail_activity_data_todo" model="mail.activity.type">
+        <field name="name">To Do</field>
+        <field name="category">default</field>
+    </record>
+</odoo>

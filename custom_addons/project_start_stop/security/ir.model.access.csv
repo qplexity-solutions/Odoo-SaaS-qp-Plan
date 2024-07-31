@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+emp_access_id10,emp_right10,model_account_analytic_line,project.group_project_user,1,1,1,0
+access_manager_id7,manager_right7,model_account_analytic_line,project.group_project_manager,1,1,1,1
+access_manager_id9,manager_right9,base.model_res_partner,project.group_project_manager,1,0,0,0
+access_work_log_wizard,work.log.wizard,project_start_stop.model_work_log_wizard,,1,1,1,1
+project_start_stop.access_work_log_time_wizard,access_work_log_time_wizard,project_start_stop.model_work_log_time_wizard,base.group_user,1,1,1,1

@@ -1,0 +1,55 @@
+<!-- views/attendance_request_views.xml -->
+<odoo>
+    <record id="view_attendance_request_form" model="ir.ui.view">
+        <field name="name">attendance.request.form</field>
+        <field name="model">attendance.request</field>
+        <field name="arch" type="xml">
+            <form string="Attendance Request" create="false">
+                <header>
+                    <button string="Approve by Team Lead" type="object" name="action_approve_team_lead" groups="attendance_request_approval.group_attendance_request_team_lead" states="submit" class="oe_highlight"/>
+                    <button string="Approve by Time Officer" type="object" name="action_approve_time_officer" groups="attendance_request_approval.group_attendance_request_time_office" states="approved_team_lead" class="oe_highlight"/>
+                    <button string="Reject" type="object" name="action_reject" states="submit,approved_team_lead"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,approved,rejected"
+                           statusbar_colors="draft:blue,approved:green,rejected:red"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" nolabel="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id" readonly="1" options='{"no_open": True,"no_create_edit": True}'/>
+                            <field name="attendance_id" readonly="1" options='{"no_open": True,"no_create_edit": True}'/>
+                            <field name="current_check_in" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="current_check_out" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                        <group>
+                            <field name="check_in" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="check_out" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="reason" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_attendance_request_tree" model="ir.ui.view">
+        <field name="name">attendance.request.tree</field>
+        <field name="model">attendance.request</field>
+        <field name="arch" type="xml">
+            <tree string="Attendance Requests" create="false">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="attendance_id"/>
+                <field name="check_in"/>
+                <field name="check_out"/>
+                <field name="reason"/>
+                <field name="state"/>
+                <field name="company_id"/>
+            </tree>
+        </field>
+    </record>
+</odoo>

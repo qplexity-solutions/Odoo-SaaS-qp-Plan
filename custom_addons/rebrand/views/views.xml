@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+  <data>
+    <!-- Top menu Accounting instead of Invoicing -->
+    <record id="account.menu_finance" model="ir.ui.menu">
+      <field name="name">Accounting</field>
+    </record>
+    <!-- replace invoicing to accounting in settings -->
+    <record id="res_config_settings_view_form_01" model="ir.ui.view">
+      <field name="name">res.config.settings.view.form.inherit.account</field>
+      <field name="model">res.config.settings</field>
+      <field name="inherit_id" ref="account.res_config_settings_view_form" />
+      <field name="arch" type="xml">
+        <xpath expr="//div[@data-key='account']" position="attributes">
+          <attribute name="string">Accounting</attribute>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

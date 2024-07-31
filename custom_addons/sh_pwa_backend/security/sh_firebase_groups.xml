@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sh_push_notification_category" model="ir.module.category">
+        <field name="name">Firebase Push Notification</field>
+        <field name="sequence">60</field>
+    </record>
+    <record id="sh_push_notification_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="category_id" ref="sh_push_notification_category" />
+    </record>
+</odoo>
