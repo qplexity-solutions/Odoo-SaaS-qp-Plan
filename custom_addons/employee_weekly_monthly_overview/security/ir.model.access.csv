@@ -1,2 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-employee_weekly_monthly_overview_wizard,employee.weekly.monthly.overview.wizard,model_employee_weekly_monthly_overview_wizard,,1,1,1,1

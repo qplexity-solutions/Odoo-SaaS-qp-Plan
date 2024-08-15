@@ -1,5 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_faceid_user_face,faceid.user.face,model_res_users_image,base.group_erp_manager,1,1,1,1
-access_faceid_system_user_face,faceid.system.user.face,model_res_users_image,base.group_user,1,1,1,0
-access_faceid_user_log,faceid.user.face,model_res_users_faceid_log,base.group_erp_manager,1,1,1,1
-access_faceid_system_user_log,faceid.system.user.face,model_res_users_faceid_log,base.group_user,0,0,1,0
