@@ -1,5 +1,5 @@
 # Use the official Odoo image from Docker Hub as the base image
-FROM odoo:16.0
+FROM odoo:17.0
 
 
 
