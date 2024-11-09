@@ -5,8 +5,8 @@
     'version': '17.0.1.0.0',
     'sequence': 1,
     'category': 'Sales/Sales',
-    'author': 'Vishal',
-    'support': 'vvgediya@gmail.com',
+    'author': 'Lionel',
+    'support': 'helpdesk@qplexity.com',
     'depends': [
         'sale', 'account', 'purchase'
     ],

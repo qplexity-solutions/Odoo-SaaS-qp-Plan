@@ -2,9 +2,9 @@
 # Part of Softhealer Technologies.
 {
     "name":"Helpdesk",
-    "author":"Softhealer Technologies",
-    "website":"https://www.softhealer.com",
-    "support":"support@softhealer.com",
+    "author":"QPLEXITY Solutions",
+    "website":"https://www.qplexity.com",
+    "support":"helpdesk@qplexity.com",
     "category":"Discuss",
     "license":"OPL-1",
     "summary":"Flexible HelpDesk Customizable Help Desk Service Desk HelpDesk With Stages Help Desk Ticket Management Helpdesk Email Templates Helpdesk Chatter manage customer support ticket system ticket portal support Timesheet Email Alias Email Apps for purchase Material Requisitions Request  purchase product Requisitions Request Material Requisition for tender Material Requisition for manufacturing order Product Request on RFQ Product Request on Tender Product Request on manufacturing order Odoo",
