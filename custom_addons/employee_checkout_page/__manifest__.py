@@ -9,8 +9,8 @@
     """,
     'category': 'Human Resources/Attendances',
 
-    'author': 'Odoo PS',
-    'website': 'https://www.odoo.com',
+    'author': 'qplexity solutions',
+    'website': 'https://www.qplexity.com',
     'license': 'LGPL-3',
 
     'depends': [

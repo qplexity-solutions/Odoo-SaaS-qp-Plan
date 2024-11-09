@@ -5,10 +5,8 @@
         """
         Short (1 phrase/line) summary of the module's purpose, used as
         subtitle on modules listing or apps.openerp.com""",
-    'author':
-        "",
-    'website':
-        "http://qplexity.ch",
+    'author': 'qplexity solutions',
+    'website': 'https://www.qplexity.com',
     'category':
         'Uncategorized',
     'license':

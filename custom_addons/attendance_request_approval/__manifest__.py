@@ -25,8 +25,8 @@ Benefits:
 
 Install the Attendance Request Manager today and transform how your organization handles attendance modifications!
     """,
-    'author': 'Siddiq Chauhdry | MarkhorTech',
-    'website': 'https://www.markhortech.pk',
+    'author': 'qplexity solutions',
+    'website': 'https://www.qplexity.com',
     'depends': ['base', 'hr', 'hr_attendance', 'mail'],
     'data': [
         'security/attendance_request_security.xml',

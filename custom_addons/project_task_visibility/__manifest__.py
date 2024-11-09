@@ -9,8 +9,8 @@
          via a boolean toggle in the settings menu. 
         When activated, employees can see all projects and tasks from all companies
     """,
-    'author': 'Siddiq Chauhdry | MarkhorTech',
-    'website': 'https://www.markhortech.pk',
+    'author': 'qplexity solutions',
+    'website': 'https://www.qplexity.com',
     'depends': ['base', 'project'],
     'data': [
         'views/view.xml',
