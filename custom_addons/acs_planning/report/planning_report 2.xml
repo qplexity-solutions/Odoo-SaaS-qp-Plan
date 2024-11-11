@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_planning_document">
+        <t t-call="web.external_layout">
+            <t t-set="doc" t-value="doc.with_context({'lang':doc.approver_id.lang})"/>
+            <div class="page">
+                <span> 
+                    <h2 class="text-left">
+                        <span  t-field="doc.name"></span>
+                    </h2>
+                    
+                </span>
+                <table class="table table-sm mt32 mb32">
+                    <tr>
+                        <td style="border-bottom:0px  !important;border-top:0px  !important" class="text-left" >
+                            <strong>Start Date:  </strong>
+                        </td>
+                        <td style="border-bottom:0px  !important;border-top:0px  !important"  >
+                            <span t-field="doc.start_date"/>
+                        </td>
+                        <td style="border-bottom:0px  !important;border-top:0px  !important" class="text-left">
+                            <strong>End Date:  </strong>
+                        </td>
+                        <td style="border-bottom:0px  !important;border-top:0px  !important"  >
+                            <span t-field="doc.end_date"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border-bottom:0px  !important;border-top:0px  !important" class="text-left" >
+                            <strong>Work Location:  </strong>
+                        </td>
+                        <td style="border-bottom:0px  !important;border-top:0px  !important"  >
+                            <span t-field="doc.work_location_id.name"/>
+                        </td>
+                        <td style="border-bottom:0px  !important;border-top:0px  !important" class="text-left">
+                            <strong>Approver:  </strong>
+                        </td>
+                        <td style="border-bottom:0px  !important;border-top:0px  !important"  >
+                            <span t-field="doc.approver_id.name"/>
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="table table-sm table-bordered">
+                    <thead style="display: table-row-group;background-color:#d6d5d2">
+                        <tr>
+                            <th class="text-left"><strong>Sr.</strong></th>
+                            <th name="th_description"><strong>Name</strong></th>
+                            <th class="text-left"><strong>Badge ID</strong></th>
+                            <th class="text-left"><strong>Note</strong></th>
+                            <th name="th_amount" class="text-left"><strong>Working Schedule</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="doc.planning_line_ids" t-as="line">
+                            <td id="index">
+                                <span t-esc="line_index+1"/>
+                            </td>
+                            <td id="employee_id">
+                                <span t-field="line.employee_id.name"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-field="line.employee_id.barcode"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-field="line.note"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-field="line.schedule_id.name"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </t>
+    </template>
+
+    <template id="report_planning">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="acs_planning.report_planning_document" t-lang="doc.approver_id.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <record id="acs_planning_details_report" model="ir.actions.report">
+        <field name="name">Planning Details</field>
+        <field name="model">acs.planning.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">acs_planning.report_planning</field>
+        <field name="report_file">acs_planning.report_planning</field>
+        <field name="binding_model_id" ref="acs_planning.model_acs_planning_request"/>
+        <field name="print_report_name">'Planning Details - %s' % (object.name)</field>
+    </record>
+
+</odoo>

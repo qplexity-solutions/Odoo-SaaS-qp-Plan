@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <menuitem id="acs_planning_menu_root" name="Shift Planning" web_icon="acs_planning,static/description/icon.png"
+        sequence="190" groups="acs_planning.group_planning_user"/>
+
+    <menuitem id="acs_menu_planning" name="Shift Planning" action="action_acs_planning"
+        parent="acs_planning_menu_root" sequence="5"/>
+
+    <menuitem id="menu_acs_planning_request" name="Planning Request" action="action_planning_template"
+        parent="acs_planning_menu_root" sequence="2"/>
+
+    <menuitem id="acs_planning_menu_config" name="Configuration" parent="acs_planning_menu_root"
+        sequence="8" groups="acs_planning.group_planning_manager"/>
+
+    <menuitem id="menu_acs_planning_request_template" name="Planning Template" action="action_planning_request_template"
+        parent="acs_planning_menu_config" sequence="1"/>
+
+    <menuitem name="Timetable" id="menu_acs_timetable" parent="acs_planning_menu_config" action="action_acs_timetable" sequence="2"/>
+
+</odoo>
+    
