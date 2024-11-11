@@ -29,8 +29,8 @@ class HrEmployee(models.Model):
             last_check_in = last_check_in + datetime.timedelta(minutes=120)
         return {
             # 'last_check_in': employee.last_check_in + datetime.timedelta(minutes=120),
-            'last_check_in': last_check_in,
-            # 'last_check_in': employee.last_attendance_id.check_in,
+            # 'last_check_in': last_check_in,
+            'last_check_in': employee.last_attendance_id.check_in,
             'assigned_projects': projects.mapped('name'),
             'total_holidays': employee.allocation_remaining_display,
             'total_overtime': employee.total_overtime,
