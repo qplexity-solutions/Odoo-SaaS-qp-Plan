@@ -62,7 +62,7 @@ class HRLeaveInherite(models.Model):
         for leave in overtime_leaves:
             employee = leave.employee_id.sudo()
             duration = leave.number_of_hours_display
-            if duration > 100:
+            if duration > 500:
                 if employee.user_id == self.env.user:
                     raise ValidationError(_('You do not have enough extra hours to request this leave'))
                 raise ValidationError(_('The employee does not have enough extra hours to request this leave.'))
@@ -90,7 +90,7 @@ class HRLeaveInherite(models.Model):
             employee = leave.employee_id.sudo()
             duration = leave.number_of_hours_display
             print("DDDDDDDD : ", duration)
-            if duration > 100:
+            if duration > 500:
                 if employee.user_id == self.env.user:
                     raise ValidationError(_('You do not have enough extra hours to request this leave'))
                 raise ValidationError(_('The employee does not have enough extra hours to request this leave.'))
@@ -119,7 +119,7 @@ class HRLeaveInherite(models.Model):
                 leave_days = mapped_days[holiday.employee_id.id][holiday.holiday_status_id.id]
                 if holiday.holiday_status_id.name == 'Extra Hours':
                     duration = holiday.number_of_hours_display
-                    if duration > 80:
+                    if duration > 500:
                         raise ValidationError(_('The number of remaining time off is not sufficient for this time off type.\n'
                                                 'Please also check the time off waiting for validation.'))
                 else:
