@@ -12,8 +12,8 @@
         It utilizes Python's datetime module to handle date calculations and calendar module to get the number of days in a month.
         The report is designed to provide insights into employee activities, facilitating analysis and decision-making within the organization.
     """,
-    'author': "Siddiq Chauhdry | MarkhorTech",
-    "website": "https://www.markhortech.pk",
+    'author': "Qplexity Solutions",
+    "website": "https://www.qplexity.com",
     'depends': ['base', 'hr', 'hr_holidays', 'hr_attendance'],
     'data': [
         'security/ir.model.access.csv',
