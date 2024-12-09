@@ -7,10 +7,9 @@
         subtitle on modules listing or apps.openerp.com""",
     'author': 'qplexity solutions',
     'website': 'https://www.qplexity.com',
+    'license': 'LGPL-3',
     'category':
         'Uncategorized',
-    'license':
-        'Other proprietary',
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml

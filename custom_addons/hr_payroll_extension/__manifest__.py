@@ -10,8 +10,12 @@
         Long description of module's purpose
     """,
 
+    'description': """Make overtime possible plus and minus Values""",
     'author': 'qplexity solutions',
     'website': 'https://www.qplexity.com',
+    'license': 'LGPL-3',
+    'category': 'Human Resources',
+    'version': '16.24.12.',
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/16.0/odoo/addons/base/data/ir_module_category_data.xml

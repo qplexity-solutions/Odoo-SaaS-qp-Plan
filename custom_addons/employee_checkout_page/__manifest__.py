@@ -1,17 +1,13 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Employee Checkout Page Customisation',
-    'version': '16.0.5',
     'summary': 'Employee Checkout Page Customisation',
-    'description': """
-        Employee Checkout Page Customisation
-        Task ID: 3733197
-    """,
-    'category': 'Human Resources/Attendances',
-
+    'description': """HR Check-In and Out Page Custom""",
     'author': 'qplexity solutions',
     'website': 'https://www.qplexity.com',
     'license': 'LGPL-3',
+    'category': 'Human Resources',
+    'version': '16.24.12.',
 
     'depends': [
         'hr_attendance',

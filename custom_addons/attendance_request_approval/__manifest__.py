@@ -1,8 +1,11 @@
 # __manifest__.py
 {
     'name': 'Attendance Request Manager with Approval Workflow',
-    'version': '1.0',
+    'author': 'qplexity solutions',
+    'website': 'https://www.qplexity.com',
+    'license': 'LGPL-3',
     'category': 'Human Resources',
+    'version': '16.24.12.',
     'summary': 'Efficiently Manage Employee Attendance Requests with Advanced Approval Workflows',
     'description': """
 Boost your HR operations with the Attendance Request Manager module, designed to streamline and automate the process of managing attendance modifications. This powerful tool empowers employees to request changes to their attendance records while ensuring robust oversight and approval mechanisms.
@@ -25,8 +28,6 @@ Benefits:
 
 Install the Attendance Request Manager today and transform how your organization handles attendance modifications!
     """,
-    'author': 'qplexity solutions',
-    'website': 'https://www.qplexity.com',
     'depends': ['base', 'hr', 'hr_attendance', 'mail'],
     'data': [
         'security/attendance_request_security.xml',

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Employee Weekly & Monthly Overview',
-    'version': '0.1',
-    'category': 'Human Resources',
     'summary': 'Employee Weekly & Monthly Overview',
     'description': """It extracts information about the employees, year, month, and overview type (weekly or monthly) from the context.
         It browses through the hr.employee model to fetch details of the specified employees.
@@ -12,8 +10,11 @@
         It utilizes Python's datetime module to handle date calculations and calendar module to get the number of days in a month.
         The report is designed to provide insights into employee activities, facilitating analysis and decision-making within the organization.
     """,
-    'author': "Qplexity Solutions",
-    "website": "https://www.qplexity.com",
+    'author': 'qplexity solutions',
+    'website': 'https://www.qplexity.com',
+    'license': 'LGPL-3',
+    'category': 'Human Resources',
+    'version': '16.24.12.',
     'depends': ['base', 'hr', 'hr_holidays', 'hr_attendance'],
     'data': [
         'security/ir.model.access.csv',

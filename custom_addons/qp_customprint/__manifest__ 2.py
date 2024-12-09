@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'QP Print Solution',
-    'summary': 'QP Customization',
-    'version': '17.0.1.0.0',
+    'summary': 'enable product pictures on quotation ans sales order',
+    'version': '17.24.12',
     'sequence': 1,
     'category': 'Sales/Sales',
-    'author': 'Lionel',
-    'support': 'helpdesk@qplexity.com',
+    'author': 'qplexity solutions',
+    'website': 'https://www.qplexity.com',
+    'license': 'LGPL-3',
     'depends': [
         'sale', 'account', 'purchase'
     ],
