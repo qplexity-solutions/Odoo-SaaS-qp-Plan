@@ -19,9 +19,16 @@ class EmployeeWorkingInformationReportModel(models.AbstractModel):
         docs = self.env[model].browse(self.env.context.get('active_id'))
 
         employee_ids = None
-
+        start_year =None
+        end_year =None
+        start_month =None
+        end_month =None
         if docs.employee_ids:
             employee_ids = docs.employee_ids
+            start_year =int(docs.start_year)
+            end_year =int(docs.end_year)+1
+            end_month = int(docs.end_month)
+            start_month =int(docs.start_month)
 
         records = self.env['hr.employee'].browse(employee_ids.ids)
         employees_list = []
@@ -66,6 +73,7 @@ class EmployeeWorkingInformationReportModel(models.AbstractModel):
             # Previous Year Calculations Ends Here
             # Define a list to store results
             yearly_hours_details = []
+            employee_data_datails =[]
             previous_years_extra_hours = extra_hours_balance
 
             def get_last_day_of_month(year, month):
@@ -75,164 +83,181 @@ class EmployeeWorkingInformationReportModel(models.AbstractModel):
                 else:
                     return datetime(year, month + 1, 1, 23, 59, 0) - timedelta(days=1)
 
-            for month in range(1, 13):
-                # Get the first and last day of the month
-                start_of_month = datetime(current_year, month, 1)
-                end_of_month = get_last_day_of_month(current_year, month)
+            for i in range(start_year,end_year):
+                start_month_value = 1
+                end_month_value = 12
 
-                # Iterate over employees
-                for employee in record:
-                    # Get the employee's timezone
-                    tz = pytz.timezone(employee.tz or 'UTC')
+                if i == start_year:
+                    start_month_value=start_month
+                if i == end_year-1:
+                    end_month_value=end_month
 
-                    # Convert start and end times to employee's timezone
-                    # start_utc = tz.localize(start_of_month).astimezone(pytz.utc).replace(tzinfo=None)
-                    # end_utc = tz.localize(end_of_month).astimezone(pytz.utc).replace(tzinfo=None)
+                for month in range(start_month_value, end_month_value+1):
+                    # Get the first and last day of the month
+                    start_of_month = datetime(i, month, 1)
+                    end_of_month = get_last_day_of_month(i, month)
+                    for employee in record:
+                        # Get the employee's timezone
+                        tz = pytz.timezone(employee.tz or 'UTC')
 
-                    # Search for attendances within the current month
-                    attendances = self.env['hr.attendance'].sudo().search([
-                        ('employee_id', '=', employee.id),
-                        ('check_in', '>=', start_of_month),
-                        ('check_out', '<=', end_of_month),
-                    ])
-                    print(len(attendances))
-                    # Calculate total working hours for the month
-                    total_hours = 0.0
-                    for attendance in attendances:
-                        if attendance.check_in and attendance.check_out:
-                            # Ensure the attendance is within the month range
-                            # check_in = max(attendance.check_in, start_of_month)
-                            # check_out = min(attendance.check_out, end_of_month)
-                            # total_hours += (check_out - check_in).total_seconds() / 3600.0
-                            total_hours += attendance.worked_hours
+                        # Convert start and end times to employee's timezone
+                        # start_utc = tz.localize(start_of_month).astimezone(pytz.utc).replace(tzinfo=None)
+                        # end_utc = tz.localize(end_of_month).astimezone(pytz.utc).replace(tzinfo=None)
 
-                    # Calculate holidays and add 8.2 hours for each holiday
-                    holidays = self.env['hr.leave'].sudo().search([
-                        ('employee_id', '=', employee.id),
-                        ('request_date_from', '>=', start_of_month),
-                        ('request_date_to', '<=', end_of_month),
-                        ('state', '=', 'validate'),
-                        ('holiday_status_id.name', 'not in', ['Unpaid', 'Compensatory Days', 'Extra Hours']),
-                    ])
+                        # Search for attendances within the current month
+                        attendances = self.env['hr.attendance'].sudo().search([
+                            ('employee_id', '=', employee.id),
+                            ('check_in', '>=', start_of_month),
+                            ('check_out', '<=', end_of_month),
+                        ])
+                        print(len(attendances))
+                        # Calculate total working hours for the month
+                        total_hours = 0.0
+                        for attendance in attendances:
+                            if attendance.check_in and attendance.check_out:
+                                # Ensure the attendance is within the month range
+                                # check_in = max(attendance.check_in, start_of_month)
+                                # check_out = min(attendance.check_out, end_of_month)
+                                # total_hours += (check_out - check_in).total_seconds() / 3600.0
+                                total_hours += attendance.worked_hours
 
-                    for holiday in holidays:
-                        days_on_holiday = (holiday.request_date_to - holiday.request_date_from).days + 1
-                        total_hours += days_on_holiday * 8.2
-                    # Round the total working hours to two decimal places
-                    worked_hours = float_round(total_hours, precision_digits=2)
-                    print(f"Employee ID: {employee.id}, Month: {month}, Worked Hours: {worked_hours}")
-                    hr_leave = self.env['hr.leave'].sudo()._get_number_of_days(start_of_month, end_of_month, employee.id)
-                    total_working_hours = float_round(hr_leave['hours'], precision_digits=2) or 0.0
-                    extra_hours = float_round(worked_hours - total_working_hours, precision_digits=2)
-                    extra_hours_balance += extra_hours
-                    month_name = calendar.month_name[month]
-                    # Append results to the list
-                    yearly_hours_details.append({
-                        'month': f"{month_name}",
-                        'total_working_hours': round(total_working_hours, 2),
-                        'twh_style': "color: black;" if abs(total_working_hours) >= 60 else "color: black;",
-                        'worked_hours': round(worked_hours, 2),
-                        'wh_style': "color: black;" if abs(worked_hours) >= 60 else "color: black;",
-                        'extra_hours': round(extra_hours, 2),
-                        'eh_style': "color: black;" if abs(extra_hours) >= 60 else "color: black;",
-                        'extra_hours_balance': round(extra_hours_balance, 2),
-                        'ehb_style': "color: black;" if abs(extra_hours_balance) >= 60 else "color: black;",
-                    })
+                        # Calculate holidays and add 8.2 hours for each holiday
+                        holidays = self.env['hr.leave'].sudo().search([
+                            ('employee_id', '=', employee.id),
+                            ('request_date_from', '>=', start_of_month),
+                            ('request_date_to', '<=', end_of_month),
+                            ('state', '=', 'validate'),
+                            ('holiday_status_id.name', 'not in', ['Unpaid', 'Compensatory Days', 'Extra Hours']),
+                        ])
+
+                        for holiday in holidays:
+                            days_on_holiday = (holiday.request_date_to - holiday.request_date_from).days + 1
+                            total_hours += days_on_holiday * 8.2
+                        # Round the total working hours to two decimal places
+                        worked_hours = float_round(total_hours, precision_digits=2)
+                        print(f"Employee ID: {employee.id}, Month: {month}, Worked Hours: {worked_hours}")
+                        hr_leave = self.env['hr.leave'].sudo()._get_number_of_days(start_of_month, end_of_month, employee.id)
+                        total_working_hours = float_round(hr_leave['hours'], precision_digits=2) or 0.0
+                        extra_hours = float_round(worked_hours - total_working_hours, precision_digits=2)
+                        extra_hours_balance += extra_hours
+                        month_name = calendar.month_name[month]
+                        # Append results to the list
+                        yearly_hours_details.append({
+                            'month': f"{month_name} ( {i} )",
+                            'total_working_hours': round(total_working_hours, 2),
+                            'twh_style': "color: black;" if abs(total_working_hours) >= 60 else "color: black;",
+                            'worked_hours': round(worked_hours, 2),
+                            'wh_style': "color: black;" if abs(worked_hours) >= 60 else "color: black;",
+                            'extra_hours': round(extra_hours, 2),
+                            'eh_style': "color: black;" if abs(extra_hours) >= 60 else "color: black;",
+                            'extra_hours_balance': round(extra_hours_balance, 2),
+                            'ehb_style': "color: black;" if abs(extra_hours_balance) >= 60 else "color: black;",
+                        })
             # Get entitlement for the current year
-            current_year_allocation_data = self.env['hr.leave.allocation'].sudo().search([
-                ('employee_id', '=', record.id),
-                ('state', '=', 'validate'),
-                ('holiday_status_id.name', '=', 'Ferien')
-            ])
-            current_year_total_entitlement = float_round(sum(current_year_allocation_data.filtered(lambda x: x.date_from.year ==
-                                                                                                             current_year).mapped(
-                'number_of_days_display')),
-                                                         precision_digits=2) if current_year_allocation_data else 0.0
-            total_entitlement = float_round(current_year_total_entitlement + previous_year_remaining_holidays, precision_digits=2)
-            # Get taken holidays for the current year
-            current_year_taken_holidays = self.env['hr.leave'].search([
-                ('employee_id', '=', record.id),
-                ('request_date_from', '>=', datetime(current_year, 1, 1)),
-                ('request_date_to', '<=', datetime(current_year, 12, 31)),
-                ('state', '=', 'validate'),  # Filter by the state of the leave request (approved)
-                ('holiday_status_id.name', '=', 'Ferien')
-            ])
-            current_year_total_taken_holidays = sum(leave.number_of_days for leave in current_year_taken_holidays) if current_year_taken_holidays else 0.0
-            total_taken_holidays = float_round(current_year_total_taken_holidays, precision_digits=2)
-            # Calculate remaining holidays
-            remaining_holidays = float_round(total_entitlement - total_taken_holidays, precision_digits=2)
+                current_year_allocation_data = self.env['hr.leave.allocation'].sudo().search([
+                    ('employee_id', '=', record.id),
+                    ('state', '=', 'validate'),
+                    ('holiday_status_id.name', '=', 'Ferien')
+                ])
+                current_year_total_entitlement = float_round(sum(current_year_allocation_data.filtered(lambda x: x.date_from.year ==
+                                                                                                                 current_year).mapped(
+                    'number_of_days_display')),
+                                                             precision_digits=2) if current_year_allocation_data else 0.0
+                total_entitlement = float_round(current_year_total_entitlement + previous_year_remaining_holidays, precision_digits=2)
+                # Get taken holidays for the current year
+                current_year_taken_holidays = self.env['hr.leave'].search([
+                    ('employee_id', '=', record.id),
+                    ('request_date_from', '>=', datetime(current_year, 1, 1)),
+                    ('request_date_to', '<=', datetime(current_year, 12, 31)),
+                    ('state', '=', 'validate'),  # Filter by the state of the leave request (approved)
+                    ('holiday_status_id.name', '=', 'Ferien')
+                ])
+                current_year_total_taken_holidays = sum(leave.number_of_days for leave in current_year_taken_holidays) if current_year_taken_holidays else 0.0
+                total_taken_holidays = float_round(current_year_total_taken_holidays, precision_digits=2)
+                # Calculate remaining holidays
+                remaining_holidays = float_round(total_entitlement - total_taken_holidays, precision_digits=2)
 
-            # Search for leave requests for the current year and the specified employee
-            time_offs = self.env['hr.leave'].search([
-                ('employee_id', '=', record.id),
-                ('request_date_from', '>=', start_of_year),
-                ('request_date_to', '<=', end_of_year),
-                ('holiday_status_id.name', '=', 'Extra Hours'),
-                ('state', '=', 'validate')  # Optionally, filter by the state of the leave request
-            ])
-            # Define a list to store time-offs details
-            time_offs_details = []
-            # Iterate over the leave requests and append details to the list
-            for leave in time_offs:
-                # Calculate the duration in hours
-                duration_hours = (leave.request_date_to - leave.request_date_from).total_seconds() / 3600
-                # Append details to the list
-                time_offs_details.append({
-                    'from_date': leave.request_date_from,
-                    'to_date': leave.request_date_to,
-                    'hours': duration_hours,
-                    'description': leave.name
-                })
+                # Search for leave requests for the current year and the specified employee
+                time_offs = self.env['hr.leave'].search([
+                    ('employee_id', '=', record.id),
+                    ('request_date_from', '>=', start_of_year),
+                    ('request_date_to', '<=', end_of_year),
+                    ('holiday_status_id.name', '=', 'Extra Hours'),
+                    ('state', '=', 'validate')  # Optionally, filter by the state of the leave request
+                ])
+                # Define a list to store time-offs details
+                time_offs_details = []
+                # Iterate over the leave requests and append details to the list
+                for leave in time_offs:
+                    # Calculate the duration in hours
+                    duration_hours = (leave.request_date_to - leave.request_date_from).total_seconds() / 3600
+                    # Append details to the list
+                    time_offs_details.append({
+                        'from_date': leave.request_date_from,
+                        'to_date': leave.request_date_to,
+                        'hours': duration_hours,
+                        'description': leave.name
+                    })
 
-            # Search for approved leave requests (holidays) for the current year and the specified employee
-            approved_holidays = self.env['hr.leave'].search([
-                ('employee_id', '=', record.id),
-                ('request_date_from', '>=', start_of_year),
-                ('request_date_to', '<=', end_of_year),
-                ('state', '=', 'validate'),  # Filter by the state of the leave request (approved)
-                ('holiday_status_id.name', '=', 'Ferien')
-            ])
+                # Search for approved leave requests (holidays) for the current year and the specified employee
+                approved_holidays = self.env['hr.leave'].search([
+                    ('employee_id', '=', record.id),
+                    ('request_date_from', '>=', start_of_year),
+                    ('request_date_to', '<=', end_of_year),
+                    ('state', '=', 'validate'),  # Filter by the state of the leave request (approved)
+                    ('holiday_status_id.name', '=', 'Ferien')
+                ])
 
-            # Define a list to store approvFed holidays details
-            approved_holidays_details = []
+                # Define a list to store approvFed holidays details
+                approved_holidays_details = []
+
+                # Iterate over the approved leave requests and append details to the list
+                for leave in approved_holidays:
+                    # Calculate the number of days for the leave request
+                    # duration_days = (leave.request_date_to - leave.request_date_from).days + 1
+                    duration_days = leave.number_of_days_display
+
+                    # Append details to the list
+                    approved_holidays_details.append({
+                        'from_date': leave.request_date_from,
+                        'to_date': leave.request_date_to,
+                        'days': duration_days
+                    })
+
+                # Search for approved leave requests (sick leaves) for the current year and the specified employee
+                approved_sick_leaves = self.env['hr.leave'].search([
+                    ('employee_id', '=', record.id),
+                    ('request_date_from', '>=', start_of_year),
+                    ('request_date_to', '<=', end_of_year),
+                    ('state', '=', 'validate'),  # Filter by the state of the leave request (approved)
+                    ('holiday_status_id.name', '!=', 'Ferien'),  # Filter by the type of leave (Sick Leave)
+                    ('holiday_status_id.name', '!=', 'Compensatory Days')  # Filter by the type of leave (Sick Leave)
+                ])
+
+
+                # Define a list to store approved sick leaves details
+                approved_sick_leaves_details = []
 
             # Iterate over the approved leave requests and append details to the list
-            for leave in approved_holidays:
-                # Calculate the number of days for the leave request
-                # duration_days = (leave.request_date_to - leave.request_date_from).days + 1
-                duration_days = leave.number_of_days_display
+                for leave in approved_sick_leaves:
+                    # Calculate the number of days for the leave request
+                    # duration_days = (leave.request_date_to - leave.request_date_from).days + 1
+                    duration_days = leave.number_of_days_display
+                    # Append details to the list
+                    approved_sick_leaves_details.append({
+                        'from_date': leave.request_date_from,
+                        'to_date': leave.request_date_to,
+                        'days': duration_days,
+                        'description': leave.holiday_status_id.name
+                    })
 
-                # Append details to the list
-                approved_holidays_details.append({
-                    'from_date': leave.request_date_from,
-                    'to_date': leave.request_date_to,
-                    'days': duration_days
-                })
-
-            # Search for approved leave requests (sick leaves) for the current year and the specified employee
-            approved_sick_leaves = self.env['hr.leave'].search([
-                ('employee_id', '=', record.id),
-                ('request_date_from', '>=', start_of_year),
-                ('request_date_to', '<=', end_of_year),
-                ('state', '=', 'validate'),  # Filter by the state of the leave request (approved)
-                ('holiday_status_id.name', '!=', 'Ferien'),  # Filter by the type of leave (Sick Leave)
-                ('holiday_status_id.name', '!=', 'Compensatory Days')  # Filter by the type of leave (Sick Leave)
-            ])
-
-            # Define a list to store approved sick leaves details
-            approved_sick_leaves_details = []
-
-            # Iterate over the approved leave requests and append details to the list
-            for leave in approved_sick_leaves:
-                # Calculate the number of days for the leave request
-                # duration_days = (leave.request_date_to - leave.request_date_from).days + 1
-                duration_days = leave.number_of_days_display
-                # Append details to the list
-                approved_sick_leaves_details.append({
-                    'from_date': leave.request_date_from,
-                    'to_date': leave.request_date_to,
-                    'days': duration_days,
-                    'description': leave.holiday_status_id.name
+                employee_data_datails.append({
+                    'current': i,
+                    'current_year_total_entitlement': round(current_year_total_entitlement, 2),
+                    'current_year_total_taken_holidays': round(current_year_total_taken_holidays, 2),
+                    'remaining_holidays': round(remaining_holidays, 2),
+                    'approved_holidays_details': approved_holidays_details,
+                    'approved_sick_leaves_details': approved_sick_leaves_details,
                 })
             employees_list.append({
                 'employee': record,
@@ -245,14 +270,7 @@ class EmployeeWorkingInformationReportModel(models.AbstractModel):
                 'previous_years_extra_hours': round(previous_years_extra_hours, 2),
                 # Current Year Data
                 'current_year': current_year,
-                'current_year_total_entitlement': round(current_year_total_entitlement, 2),
-                'current_year_total_taken_holidays': round(current_year_total_taken_holidays, 2),
-                'total_entitlement': round(total_entitlement, 2),
-                'remaining_holidays': round(remaining_holidays, 2),
-                'total_taken_holidays': round(total_taken_holidays, 2),
-                'time_offs_details': time_offs_details,
-                'approved_holidays_details': approved_holidays_details,
-                'approved_sick_leaves_details': approved_sick_leaves_details,
+                'employee_data_datails':employee_data_datails,
             })
 
         return {
