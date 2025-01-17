@@ -135,44 +135,33 @@
                                         <div class="col-12">
                                             <table class="table table-condensed">
                                                 <tbody>
-                                                    <tr>
-                                                        <td>Zugewiesene Feiertage
-                                                            <span t-esc="employee['previous_year']"/>
-                                                        </td>
-                                                        <td style="text-align: right;">
-                                                            <span t-esc="employee['previous_year_entitlement']"/>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Zugewiesene Feiertage
-                                                            <span t-esc="employee['current_year']"/>
-                                                        </td>
-                                                        <td style="text-align: right;">
-                                                            <span t-esc="employee['current_year_total_entitlement']"/>
-                                                        </td>
-                                                    </tr>
+                                                    <t t-foreach="employee['employee_data_datails']" t-as="obj">
+                                                        <tr>
+
+                                                            <td>Zugewiesene Feiertage
+                                                                <span t-esc="obj['current']"/>
+                                                            </td>
+                                                            <td style="text-align: right;">
+                                                                <span t-esc="obj['current_year_total_entitlement']"/>
+                                                            </td>
+                                                        </tr>
+
                                                     <tr>
                                                         <td>Bezogene Feiertage
-                                                            <span t-esc="employee['previous_year']"/>
+                                                            <span t-esc="obj['current']"/>
                                                         </td>
                                                         <td style="text-align: right;">
-                                                            <span t-esc="employee['previous_year_total_taken_holidays']"/>
+                                                            <span t-esc="obj['current_year_total_taken_holidays']"/>
                                                         </td>
                                                     </tr>
-                                                    <tr>
-                                                        <td>Bezogene Feiertage
-                                                            <span t-esc="employee['current_year']"/>
-                                                        </td>
-                                                        <td style="text-align: right;">
-                                                            <span t-esc="employee['current_year_total_taken_holidays']"/>
-                                                        </td>
-                                                    </tr>
+
                                                     <tr style="border-top: 2px solid;">
                                                         <th>Aktuelles Urlaubssaldo</th>
                                                         <th style="text-align: right;">
-                                                            <span t-esc="employee['remaining_holidays']"/>
+                                                            <span t-esc="obj['remaining_holidays']"/>
                                                         </th>
                                                     </tr>
+                                                    </t>
                                                     <!--                                                    <tr>-->
                                                     <!--                                                        <td>Ferientage Übertrag-->
                                                     <!--                                                            <span t-esc="employee['previous_year']"/>-->
@@ -226,12 +215,13 @@
                                             <table class="table table-condensed">
                                                 <thead>
                                                     <tr>
-                                                        <th>Ferienbezug</th>
+                                                        <th>Ferienbezug </th>
                                                         <th class="text-center">Tage Total</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <t t-foreach="employee['approved_holidays_details']" t-as="holiday">
+                                                    <t t-foreach="employee['employee_data_datails']" t-as="holi">
+                                                        <t t-foreach="holi['approved_holidays_details']" t-as="holiday">
                                                         <tr>
                                                             <td>
                                                                 <span t-esc="holiday['from_date']"/>
@@ -243,17 +233,20 @@
                                                                 <t t-set="total_holidays" t-value="total_holidays+holiday['days']"/>
                                                             </td>
                                                         </tr>
+                                                        </t>
                                                     </t>
                                                 </tbody>
                                                 <tfoot>
+                                                    <t t-foreach="employee['employee_data_datails']" t-as="obj">
                                                     <tr>
                                                         <th>Bezogene Ferien
-                                                            <span t-esc="employee['current_year']"/>
+                                                            <span t-esc="obj['current']"/>
                                                         </th>
                                                         <th style="text-align: right;">
                                                             <span t-esc="total_holidays"/>
                                                         </th>
                                                     </tr>
+                                                    </t>
                                                 </tfoot>
                                             </table>
                                         </div>
@@ -272,7 +265,8 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <t t-foreach="employee['approved_sick_leaves_details']" t-as="sick_leave">
+                                                    <t t-foreach="employee['employee_data_datails']" t-as="obj">
+                                                    <t t-foreach="obj['approved_sick_leaves_details']" t-as="sick_leave">
                                                         <tr>
                                                             <td>
                                                                 <span t-esc="sick_leave['from_date']"/>
@@ -285,6 +279,7 @@
                                                                 <t t-set="total_sick_leaves" t-value="total_sick_leaves+sick_leave['days']"/>
                                                             </td>
                                                         </tr>
+                                                    </t>
                                                     </t>
                                                 </tbody>
                                                 <tfoot>
@@ -316,13 +311,13 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <th colspan="5">Ubertrag Std.
-                                                            <span t-esc="employee['previous_year']"/>
-                                                            =
-                                                            <span t-esc="employee['previous_years_extra_hours']"/>
-                                                        </th>
-                                                    </tr>
+<!--                                                    <tr>-->
+<!--                                                        <th colspan="5">Ubertrag Std.-->
+<!--                                                            <span t-esc="employee['previous_year']"/>-->
+<!--                                                            =-->
+<!--                                                            <span t-esc="employee['previous_years_extra_hours']"/>-->
+<!--                                                        </th>-->
+<!--                                                    </tr>-->
                                                     <t t-foreach="employee['yearly_hours_details']" t-as="month">
                                                         <t t-set="twh_style" t-value="month['twh_style']"/>
                                                         <t t-set="wh_style" t-value="month['wh_style']"/>
@@ -419,17 +414,7 @@
                                 </div>
                             </div>
                             <!-- Footer -->
-                            <div class="row"
-                                 style="position:absolute; font-weight: bolder; font-weight: 14px !important; width:100%; top:1200px; page-break-inside: avoid;">
-                                <div class="col-12">
-                                    <div class="text-center" style="border-top: 1px solid black;">
-                                        <br/>
-                                        <ul class="list-inline mb4">
-                                            <div t-field="o.env.company.report_footer"/>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
+
                             <!-- Footer Ends Here -->
                         </div>
                     </t>
@@ -453,6 +438,20 @@
                         th {
                         background-color: #f2f2f2;
                         }
+                        .footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        font-weight: bolder;
+        font-size: 14px !important;
+        page-break-before: always; /* Forces footer to the next page if needed */
+    }
+    .footer .content {
+        text-align: center;
+        border-top: 1px solid black;
+        padding-top: 10px;
+    }
                     </style>
                 </t>
             </t>
