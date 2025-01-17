@@ -1,0 +1,28 @@
+{
+  "name"                 :  "Odoo Database Backup",
+  "summary"              :  """Module provide feature to admin to take backups of his instance's database and later download them.""",  
+  "category"             :  "Extra Tools",
+  "version"              :  "1.0.1",
+  "author"               :  "Webkul Software Pvt. Ltd.",
+  "license"              :  "Other proprietary",
+  "website"              :  "https://webkul.com/blog/odoo-data-backup-how-to-create-and-restore-data-in-odoo/",  
+  "description"          :  """Module provide feature to admin to take backups of his instance's database and later download them.""",
+  "live_test_url"        :  "http://odoodemo.webkul.com/demo_feedback?module=wk_backup_restore",  
+  "depends"              :  [
+                             'base',
+                            ],
+  "data"                 :  [
+                             'security/ir.model.access.csv',
+                             'wizards/backup_deletion_confirmation_view.xml',
+                             'data/backup_process_sequence.xml',
+                             'views/backup_process.xml',
+                             'data/backup_ignite_crone.xml',
+                             'views/menuitems.xml',
+                            ],
+  "images"               :  ['static/description/Banner.gif'],
+  "application"          :  True,
+  "installable"          :  True,
+  "currency"             :  "USD",
+  "pre_init_hook"        :  "pre_init_check",
+  "external_dependencies":  {'python': ['python-crontab', 'cssselect']},
+}
