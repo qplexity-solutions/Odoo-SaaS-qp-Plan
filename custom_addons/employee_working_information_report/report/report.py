@@ -36,8 +36,8 @@ class EmployeeWorkingInformationReportModel(models.AbstractModel):
             # Get the current year
             current_year = datetime.utcnow().year
             # Get the start and end dates of the current year
-            start_of_year = datetime(current_year, 1, 1)
-            end_of_year = datetime(current_year, 12, 31)
+            # start_of_year = datetime(current_year, 1, 1)
+            # end_of_year = datetime(current_year, 12, 31)
             # Previous Year Calculations
             previous_year = current_year - 1
             # Define the extra_hours_balance variable to keep track of the balance
@@ -91,6 +91,9 @@ class EmployeeWorkingInformationReportModel(models.AbstractModel):
                     start_month_value=start_month
                 if i == end_year-1:
                     end_month_value=end_month
+
+                start_of_year = datetime(i, 1, 1)
+                end_of_year = datetime(i, 12, 31)
 
                 for month in range(start_month_value, end_month_value+1):
                     # Get the first and last day of the month
