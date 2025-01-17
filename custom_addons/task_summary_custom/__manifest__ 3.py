@@ -1,30 +1,24 @@
 {
     'name':
-        "Task Attendance Custom",
+        "Task Summary Custom",
     'summary':
         """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+        Print Settings for Human Ressource""",
+    'description': """HR Employee Working Information Report""",
     'author': 'qplexity solutions',
     'website': 'https://www.qplexity.com',
     'license': 'LGPL-3',
     'category': 'Human Resources',
     'version': '16.24.12.',
+    'category':
+        'Uncategorized',
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
-    'version':
-        '16.0.0.1.0',
 
     # any module necessary for this one to work correctly
-    'depends': [
-        'base',
-        'hr',
-        'project_start_stop',
-        'project',
-        'hr_timesheet',
-    ],
+    'depends': ['base', 'analytic', 'hr_timesheet', 'project', 'hr','hr_attendance'],
 
     # always loaded
     'data': [
