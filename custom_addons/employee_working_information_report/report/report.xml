@@ -311,13 +311,13 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-<!--                                                    <tr>-->
-<!--                                                        <th colspan="5">Ubertrag Std.-->
-<!--                                                            <span t-esc="employee['previous_year']"/>-->
-<!--                                                            =-->
-<!--                                                            <span t-esc="employee['previous_years_extra_hours']"/>-->
-<!--                                                        </th>-->
-<!--                                                    </tr>-->
+                                                    <tr>
+                                                        <th colspan="5">Ubertrag Std.
+                                                            <span t-esc="employee['transfer_data_year']"/>
+                                                            =
+                                                            <span t-esc="employee['transfer_data']"/>
+                                                        </th>
+                                                    </tr>
                                                     <t t-foreach="employee['yearly_hours_details']" t-as="month">
                                                         <t t-set="twh_style" t-value="month['twh_style']"/>
                                                         <t t-set="wh_style" t-value="month['wh_style']"/>
@@ -327,9 +327,9 @@
                                                             <td>
                                                                 <span t-esc="month['month']"/>
                                                             </td>
-                                                            <!--                                                            <td class="text-center">-->
-                                                            <!--                                                                <span t-esc="month['total_working_hours']"/>-->
-                                                            <!--                                                            </td>-->
+<!--                                                                                                                        <td class="text-center">-->
+<!--                                                                                                                            <span t-esc="month['total_working_hours']"/>-->
+<!--                                                                                                                        </td>-->
                                                             <td class="text-center">
                                                                 <span t-esc="month['worked_hours']" t-att-style="wh_style"/>
                                                             </td>

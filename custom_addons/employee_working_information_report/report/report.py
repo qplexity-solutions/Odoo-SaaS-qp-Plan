@@ -42,6 +42,7 @@ class EmployeeWorkingInformationReportModel(models.AbstractModel):
             previous_year = current_year - 1
             # Define the extra_hours_balance variable to keep track of the balance
             extra_hours_balance = 0
+
             # Get entitlement for the previous year
             # Calculate the start and end dates of the previous year
             previous_year_start = datetime(previous_year, 1, 1)
@@ -74,7 +75,20 @@ class EmployeeWorkingInformationReportModel(models.AbstractModel):
             # Define a list to store results
             yearly_hours_details = []
             employee_data_datails =[]
+            transfer_data=0
             previous_years_extra_hours = extra_hours_balance
+
+            def get_transfer_hour(i):
+                extra_hours_balance_i = 0
+                previous_year_start_i = datetime(i, 1, 1)
+                previous_year_end_i = datetime(i, 12, 31)
+                extra_hours_records_i = self.env['hr.attendance.overtime'].sudo().search(
+                    [('employee_id', '=', record.id), ('date', '>=', previous_year_start_i),
+                     ('date', '<=', previous_year_end_i)])
+                if extra_hours_records_i:
+                    for hour in extra_hours_records_i:
+                        extra_hours_balance_i += hour.duration
+                return extra_hours_balance_i
 
             def get_last_day_of_month(year, month):
                 # Calculate the last day of the given month
@@ -86,6 +100,7 @@ class EmployeeWorkingInformationReportModel(models.AbstractModel):
             for i in range(start_year,end_year):
                 start_month_value = 1
                 end_month_value = 12
+                transfer_data += get_transfer_hour(i-1)
 
                 if i == start_year:
                     start_month_value=start_month
@@ -170,8 +185,8 @@ class EmployeeWorkingInformationReportModel(models.AbstractModel):
                 # Get taken holidays for the current year
                 current_year_taken_holidays = self.env['hr.leave'].search([
                     ('employee_id', '=', record.id),
-                    ('request_date_from', '>=', datetime(current_year, 1, 1)),
-                    ('request_date_to', '<=', datetime(current_year, 12, 31)),
+                    ('request_date_from', '>=', datetime(i, 1, 1)),
+                    ('request_date_to', '<=', datetime(i, 12, 31)),
                     ('state', '=', 'validate'),  # Filter by the state of the leave request (approved)
                     ('holiday_status_id.name', '=', 'Ferien')
                 ])
@@ -274,6 +289,8 @@ class EmployeeWorkingInformationReportModel(models.AbstractModel):
                 # Current Year Data
                 'current_year': current_year,
                 'employee_data_datails':employee_data_datails,
+                'transfer_data':transfer_data,
+                'transfer_data_year' : f'({start_year-1} - {end_year-2})',
             })
 
         return {

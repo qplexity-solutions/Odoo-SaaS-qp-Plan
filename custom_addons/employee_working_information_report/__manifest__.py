@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'HR Employee Working Information Report in Odoo',
+    'version': '0.1',
+    'category': 'Human Resources',
     'summary': 'HR Employee Working Information Report in Odoo',
     'description': """HR Employee Working Information Report in Odoo""",
-    'author': 'qplexity solutions',
-    'website': 'https://www.qplexity.com',
-    'license': 'LGPL-3',
-    'category': 'Human Resources',
-    'version': '16.24.12.',
+    'author': "Siddiq Chauhdry | MarkhorTech",
+    "website": "https://www.markhortech.pk",
     'depends': ['base', 'hr', 'hr_holidays', 'hr_attendance'],
     'data': [
         'security/ir.model.access.csv',
