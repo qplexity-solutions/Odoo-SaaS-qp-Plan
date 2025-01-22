@@ -7,6 +7,7 @@ import pytz
 import calendar
 from collections import defaultdict
 from odoo.addons.resource.models.resource import Intervals
+import calendar
 
 
 class EmployeeWorkingInformationReportModel(models.AbstractModel):
@@ -32,26 +33,59 @@ class EmployeeWorkingInformationReportModel(models.AbstractModel):
 
         records = self.env['hr.employee'].browse(employee_ids.ids)
         employees_list = []
+        start_date = datetime(start_year-1, start_month, 1)
+        end_date = datetime(end_year-1, end_month, 31)  # End date (replace with actual value)
         for record in records:
             # Get the current year
+            total_overtime = 0.0
+
+            # Filter overtime records for the current employee within the given date range
+            overtime_records = self.env['hr.attendance.overtime'].sudo().search([
+                ('employee_id', '=', record.id),  # Filter by employee
+                ('date', '>=', start_date),  # Filter by start date
+                ('date', '<=', end_date)  # Filter by end date
+            ])
+
+            # Sum up the overtime durations for the filtered records
+            for overtime in overtime_records:
+                total_overtime += overtime.duration
+
+
             current_year = datetime.utcnow().year
             # Get the start and end dates of the current year
             # start_of_year = datetime(current_year, 1, 1)
             # end_of_year = datetime(current_year, 12, 31)
             # Previous Year Calculations
-            previous_year = current_year - 1
+            previous_year = start_year - 1
             # Define the extra_hours_balance variable to keep track of the balance
             extra_hours_balance = 0
+            new_extra_hour_balance = 0
+            search_start_month=12
+            search_day=30
+            if start_month == 1:
+                search_start_month = 12
+                adjusted_year = previous_year
+            else:
+                search_start_month = start_month-1
+                adjusted_year = previous_year + 1  # This gives the number of days in the month
+            last_day_of_month = calendar.monthrange(adjusted_year, search_start_month)[1]
 
+            # Create the date for the last day of the previous month
+            previous_year_end = datetime(adjusted_year, search_start_month, last_day_of_month)
+            # Adjust search_day to the last valid day of the month
+            if search_day > last_day_of_month:
+                search_day = last_day_of_month
             # Get entitlement for the previous year
             # Calculate the start and end dates of the previous year
+
             previous_year_start = datetime(previous_year, 1, 1)
-            previous_year_end = datetime(previous_year, 12, 31)
+            transfer_data_year =f'({previous_year_start.strftime("%Y-%m")}-{previous_year_end.strftime("%Y-%m")})'
+            # previous_year_end = datetime(previous_year, search_start_month, search_day)
             extra_hours_records = self.env['hr.attendance.overtime'].sudo().search([('employee_id', '=', record.id), ('date', '>=', previous_year_start),
                                                                                     ('date', '<=', previous_year_end)])
             if extra_hours_records:
                 for hour in extra_hours_records:
-                    extra_hours_balance += hour.duration
+                    new_extra_hour_balance += hour.duration
             previous_year_allocation_data = self.env['hr.leave.allocation'].sudo().search([
                 ('employee_id', '=', record.id),
                 ('state', '=', 'validate'),
@@ -75,20 +109,21 @@ class EmployeeWorkingInformationReportModel(models.AbstractModel):
             # Define a list to store results
             yearly_hours_details = []
             employee_data_datails =[]
-            transfer_data=0
-            previous_years_extra_hours = extra_hours_balance
+            # transfer_data=0
 
-            def get_transfer_hour(i):
-                extra_hours_balance_i = 0
-                previous_year_start_i = datetime(i, 1, 1)
-                previous_year_end_i = datetime(i, 12, 31)
-                extra_hours_records_i = self.env['hr.attendance.overtime'].sudo().search(
-                    [('employee_id', '=', record.id), ('date', '>=', previous_year_start_i),
-                     ('date', '<=', previous_year_end_i)])
-                if extra_hours_records_i:
-                    for hour in extra_hours_records_i:
-                        extra_hours_balance_i += hour.duration
-                return extra_hours_balance_i
+            previous_years_extra_hours = new_extra_hour_balance
+
+            # def get_transfer_hour(i):
+            #     extra_hours_balance_i = 0
+            #     previous_year_start_i = datetime(i, 1, 1)
+            #     previous_year_end_i = datetime(i, 12, 31)
+            #     extra_hours_records_i = self.env['hr.attendance.overtime'].sudo().search(
+            #         [('employee_id', '=', record.id), ('date', '>=', previous_year_start_i),
+            #          ('date', '<=', previous_year_end_i)])
+            #     if extra_hours_records_i:
+            #         for hour in extra_hours_records_i:
+            #             extra_hours_balance_i += hour.duration
+            #     return extra_hours_balance_i
 
             def get_last_day_of_month(year, month):
                 # Calculate the last day of the given month
@@ -100,7 +135,7 @@ class EmployeeWorkingInformationReportModel(models.AbstractModel):
             for i in range(start_year,end_year):
                 start_month_value = 1
                 end_month_value = 12
-                transfer_data += get_transfer_hour(i-1)
+                # transfer_data += get_transfer_hour(i-1)
 
                 if i == start_year:
                     start_month_value=start_month
@@ -153,12 +188,26 @@ class EmployeeWorkingInformationReportModel(models.AbstractModel):
                             total_hours += days_on_holiday * 8.2
                         # Round the total working hours to two decimal places
                         worked_hours = float_round(total_hours, precision_digits=2)
-                        print(f"Employee ID: {employee.id}, Month: {month}, Worked Hours: {worked_hours}")
+                        # print(f"Employee ID: {employee.id}, Month: {month}, Worked Hours: {worked_hours}")
                         hr_leave = self.env['hr.leave'].sudo()._get_number_of_days(start_of_month, end_of_month, employee.id)
                         total_working_hours = float_round(hr_leave['hours'], precision_digits=2) or 0.0
                         extra_hours = float_round(worked_hours - total_working_hours, precision_digits=2)
                         extra_hours_balance += extra_hours
                         month_name = calendar.month_name[month]
+                        '''new way achive the method'''
+                        overtime_records = self.env['hr.attendance.overtime'].sudo().search([
+                            ('employee_id', '=', record.id),
+                            ('date', '>=', start_of_month),
+                            ('date', '<=', end_of_month)
+                        ])
+
+                        # Initialize extra_hours for the current month
+                        extra_hours = 0.0
+                        for overtime in overtime_records:
+                            extra_hours += overtime.duration  # Accumulate overtime for the current month
+
+                        # Update extra_hours_balance (cumulative overtime)
+                        new_extra_hour_balance += extra_hours
                         # Append results to the list
                         yearly_hours_details.append({
                             'month': f"{month_name} ( {i} )",
@@ -168,8 +217,8 @@ class EmployeeWorkingInformationReportModel(models.AbstractModel):
                             'wh_style': "color: black;" if abs(worked_hours) >= 60 else "color: black;",
                             'extra_hours': round(extra_hours, 2),
                             'eh_style': "color: black;" if abs(extra_hours) >= 60 else "color: black;",
-                            'extra_hours_balance': round(extra_hours_balance, 2),
-                            'ehb_style': "color: black;" if abs(extra_hours_balance) >= 60 else "color: black;",
+                            'extra_hours_balance': round(new_extra_hour_balance, 2),
+                            'ehb_style': "color: black;" if abs(new_extra_hour_balance) >= 60 else "color: black;",
                         })
             # Get entitlement for the current year
                 current_year_allocation_data = self.env['hr.leave.allocation'].sudo().search([
@@ -194,7 +243,6 @@ class EmployeeWorkingInformationReportModel(models.AbstractModel):
                 total_taken_holidays = float_round(current_year_total_taken_holidays, precision_digits=2)
                 # Calculate remaining holidays
                 remaining_holidays = float_round(total_entitlement - total_taken_holidays, precision_digits=2)
-
                 # Search for leave requests for the current year and the specified employee
                 time_offs = self.env['hr.leave'].search([
                     ('employee_id', '=', record.id),
@@ -289,8 +337,9 @@ class EmployeeWorkingInformationReportModel(models.AbstractModel):
                 # Current Year Data
                 'current_year': current_year,
                 'employee_data_datails':employee_data_datails,
-                'transfer_data':transfer_data,
-                'transfer_data_year' : f'({start_year-1} - {end_year-2})',
+                # 'transfer_data':round(transfer_data,2),
+                'transfer_data_year' : transfer_data_year,
+                'total_overtime':total_overtime,
             })
 
         return {

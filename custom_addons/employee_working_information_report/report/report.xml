@@ -315,7 +315,7 @@
                                                         <th colspan="5">Ubertrag Std.
                                                             <span t-esc="employee['transfer_data_year']"/>
                                                             =
-                                                            <span t-esc="employee['transfer_data']"/>
+                                                            <span t-esc="employee['previous_years_extra_hours']"/>
                                                         </th>
                                                     </tr>
                                                     <t t-foreach="employee['yearly_hours_details']" t-as="month">
@@ -348,18 +348,18 @@
                                             <!--                                            <h5>Extrastunden <span t-esc="'{0:02.0f}:{1:02.0f}'.format(*divmod(employee['employee'].total_overtime * 60, 60))"/></h5>-->
                                             <p style="font-weight: bolder;">Extrastunden
                                                 <t t-set="total_overtime_style" t-value="'color:black;'"/>
-                                                <t t-if="abs(employee['employee'].total_overtime) >= 60">
+                                                <t t-if="abs(employee['total_overtime']) >= 60">
                                                     <t t-set="total_overtime_style" t-value="'color:red; font-weight:bolder;'"/>
                                                 </t>
-                                                <span t-esc="employee['employee'].total_overtime"
+                                                <span t-esc="employee['total_overtime']"
                                                       t-options='{"widget": "float_time"}'
                                                       t-att-style="total_overtime_style"
                                                 />
                                                 <br/>
-                                                <t t-if="employee['employee'].total_overtime &gt;= 60">
+                                                <t t-if="employee['total_overtime'] &gt;= 60">
                                                     <span style="color: red; font-weight: bolder;">Achtung hohes Überzeit Saldo</span>
                                                 </t>
-                                                <t t-elif="employee['employee'].total_overtime &lt; -59">
+                                                <t t-elif="employee['total_overtime'] &lt; -59">
                                                     <span style="color: red; font-weight: bolder;">Achtung tiefes Überzeit Saldo</span>
                                                 </t>
                                                 <t t-else="">
