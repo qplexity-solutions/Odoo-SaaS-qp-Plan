@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Template for the project dashboard -->
+<templates id="AttendanceDashboard" xml:space="preserve">
+
+    <t t-name="AttendanceDashboard">
+        <div style="height:1000px; max-height: -webkit-fill-available; overflow-y: scroll;">
+            <div class="mx-5">
+                <div class="row gx-0 mt-3">
+                    <div class="col-12 d-flex justify-content-end ">
+                        <button id="downloadBtn" class="btn btn-primary p-2 downloadReport">
+                            <i class="fa fa-file-pdf-o p-1" aria-hidden="true"> </i> Print
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="mx-5" id="dashboard" >
+                <div class="row mb-5 filter-header"> </div>
+                <t t-call="calender"/>
+                <div class="row attendance_table_container"> </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="filters">
+        <div class="card mt-4 mb-3 filters">
+            <div class="row p-2 m-2 gx-0 gy-2" >  
+                <div class="col-lg-1 d-flex my-auto justify-content-center">
+                    <!-- <img t-att-src="'data:image/png;base64,' + user_img" class="css-shadow"/> -->
+
+                    <t t-if="user_img">
+                        <img t-att-src="'data:image/png;base64,' + user_img" class="css-shadow"/>
+                    </t>
+                    <t t-else="">
+                        <img t-att-src="'dev_attendance_dashboard_advanced/static/src/img/user.png'" class="css-shadow" />
+                    </t>
+                </div>
+                <div class="col-lg-4 pl-1 my-auto">
+                    <h1> <t t-esc="getGreeting"/>, <t t-esc="user_name"/>.</h1>
+                    <h4>Welcome to your Attendance Dashboard.</h4>
+                </div>
+                <div class="col-lg-7">  
+                    <div class="row gy-2">
+                        <div class="col-lg-3 m-0">
+                            <label for="department-option" class="form-label fw-bolder">Department:</label>
+                            <select class="department-option form-control pull-left" placeholder="Select Department">
+                                <option value="all">All Departments</option>
+                                 <t t-foreach="department" t-as="department">
+                                    <option t-att-value="department.id"><t t-esc="department.name"/></option>
+                               </t>
+                            </select>
+                        </div>
+                        <div class="col-lg-3 m-0">
+                            <label for="employee-option" class="form-label fw-bolder">Employee:</label>
+                            <select class="employee-option form-control pull-left" placeholder="Select Employee">
+                                <option value="all">All Employee</option>
+                                 <t t-foreach="employee" t-as="employee">
+                                    <option t-att-value="employee.id"><t t-esc="employee.name"/></option>
+                               </t>
+                            </select>
+                        </div>
+                        <div class="col-lg-3 m-0">
+                            <label for="month-option" class="form-label fw-bolder">Month</label>
+                            <select class="month-option form-select" placeholder="Select Month">
+                                <t t-foreach="month" t-as="mo">
+                                    <t t-if="mo.cr == 1">
+                                    <option t-att-value="mo.value" selected="1"><t t-esc="mo.name" /> </option>
+                                    </t>
+                                    <t t-else="">
+                                        <option t-att-value="mo.value"><t t-esc="mo.name"/></option>
+                                    </t>
+                               </t>
+                            </select>
+                        </div>
+                         <div class="col-lg-3 m-0">
+                            <label for="year-option" class="form-label fw-bolder">Year</label>
+                            <select class="year-option form-select" placeholder="Select Year">
+<!--                                <option value="all">Year</option>-->
+                                <t t-foreach="year" t-as="year">
+                                    <option t-att-value="year"><t t-esc="year"/></option>
+                               </t>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-primary" role="alert">
+            <div class="row">
+                <div class="col-2">
+                    [<b>W: </b> Weekend Day]
+                </div>
+                <div class="col-1">
+                    [<b>A: </b> Absent]
+                </div>
+                <div class="col-1">
+                    [<b>L: </b> Leave]
+                </div>
+                <div class="col-1">
+                    [<b>P: </b> Present]
+                </div>
+                <div class="col-1">
+                    [<b>H: </b> Holiday]
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="calender">
+        <div class="card">
+           <table id="attendanceCalender" >
+                <thead>
+                </thead>
+                <tbody>
+                </tbody>
+           </table>
+        </div>
+    </t>
+
+   <t t-name="attendance_Table">
+        <div class="mt-5 mb-5">
+            <div class="card" style="border-radius:10px;">
+                <table id="checkInDetail" class="table">
+                    <thead class="card-header">
+                      <tr>
+                        <th scope="col">Employee</th>
+                        <th scope="col">Leave Type</th>
+                        <th scope="col">From Date</th>
+                        <th scope="col">To Date</th>
+                        <th scope="col">Days</th>
+                        <th scope="col">Description </th>
+                          <th scope="col"> </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <t t-if="leave_details and leave_details.length">
+                                <t t-foreach="leave_details" t-as="row">
+                                    <tr>
+                                         <td>
+                                             <t t-esc="row.employee_id[1]"/>
+                                         </td>
+                                         <td>
+                                             <t t-esc="row.holiday_status_id[1]"/>
+                                         </td>
+                                         <td>
+                                             <t t-esc="row.request_date_from"/>
+                                         </td>
+                                        <td>
+                                             <t t-esc="row.request_date_to"/>
+                                         </td>
+                                         <td>
+                                             <t t-esc="row.number_of_days_display"/>
+                                         </td>
+                                        <td>
+                                             <t t-esc="row.name"/>
+                                         </td>
+                                         <td>
+                                            <button class="btn btn-primary leave_view_detail" role="option" t-att-rec-id="row.id" id="view" type="button">
+                                                View
+                                            </button>
+                                         </td>
+                                     </tr>
+                                </t>
+                             </t>
+                    </tbody>
+                  </table>
+                  <t t-if="Math.ceil(leave_details.length/rowsPerPage) > 0">
+                    <div class="d-flex align-items-center justify-content-center text-primary m-2">
+                        <i class="fa fa-arrow-circle-left fa-2x prevPage" aria-hidden="true" id='prev_button' t-on-click="(e) => this.prevPage(e)"> </i>
+                        <span style="font-weight:600; font-size:15px; margin:0px 5px 0px 5px"> Page <t t-esc="currentPage"/> of <t t-esc="Math.ceil(totalrows/rowsPerPage)"/> </span>
+                        <i class="fa fa-arrow-circle-right fa-2x nextPage" id ='next_button' aria-hidden="true" t-on-click="(e) => this.nextPage(e)"> </i>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="d-flex align-items-center justify-content-center text-primary m-2">
+                        <h3>
+                            No Leave Details Found !
+                        </h3>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>
