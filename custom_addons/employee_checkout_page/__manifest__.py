@@ -2,7 +2,7 @@
 {
     'name': 'Employee Checkout Page Customisation',
     'summary': 'Employee Checkout Page Customisation',
-    'description': """HR Check-In and Out Page Custom"",
+    'description': """HR Check-In and Out Page Custom 1   """,
     'author': 'qplexity solutions',
     'website': 'https://www.qplexity.com',
     'license': 'LGPL-3',
