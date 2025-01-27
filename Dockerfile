@@ -1,12 +1,9 @@
 # Use the official Odoo image from Docker Hub as the base image
 FROM qplexity/odoo:latest
 
-
-
 # Install additional packages or dependencies from requirements.txt
 COPY requirements.txt /tmp/
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
-
 
 # Copy custom addons
 COPY custom_addons /mnt/extra-addons
