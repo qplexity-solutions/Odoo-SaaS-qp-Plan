@@ -2,6 +2,7 @@
 FROM qplexity/odoo:latest
 
 # Install additional packages or dependencies from requirements.txt
+WORKDIR /tmp/
 COPY requirements.txt /tmp/
 
 RUN pip install --no-cache-dir --break-system-packages -r /tmp/requirements.txt
