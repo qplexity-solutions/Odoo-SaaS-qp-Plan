@@ -1,5 +1,5 @@
 # Use the official Odoo image from Docker Hub as the base image
-FROM odoo:18.0
+FROM qplexity/odoo:latest
 
 
 

@@ -7,3 +7,11 @@ pyncclient
 boto3
 nextcloud-api-wrapper
 paramiko
+pytesseract 
+pypdf 
+pdf2image 
+opencv-python
+tesseract-ocr 
+poppler-utils 
+libgl1
+tesseract-ocr-deu
