@@ -5,7 +5,7 @@ FROM qplexity/odoo:latest
 WORKDIR /tmp/
 COPY requirements.txt /tmp/
 
-RUN pip install --no-cache-dir --break-system-packages -r /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 # Copy custom addons
 COPY custom_addons /mnt/extra-addons
