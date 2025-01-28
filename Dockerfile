@@ -1,5 +1,5 @@
 # Use the official Odoo image from Docker Hub as the base image
-FROM qplexity/odoo:latest
+FROM qplexity/odoo:18
 
 # Copy custom addons
 COPY custom_addons /mnt/extra-addons
